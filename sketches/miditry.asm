@@ -1,3 +1,12 @@
+;******************************************************************************************
+;*   
+;*      Midi Sketch
+;*              transmits middle C note on / note off about every second               
+;* 
+;*      Author: Alexander Porter (2021)
+;* 
+;******************************************************************************************
+
 ;; device definitions
         .include    "m4809def.inc"
         .include    "../libraries/midiserial.inc"
@@ -6,16 +15,17 @@
         .def        loopCt = r18
         .def        iloopL = r24
         .def        iloopH = r25
-        .equ        maxi = 0x4118
+        .equ        maxi = 0x4118       ; about 50000, an easy division for the 16 bit countdown
 
 ;; midi constants
-        .equ        pitch = 0x3C
-        .equ        noteon = 0x90
-        .equ        noteoff = 0x80
+        .equ        pitch = 0x3C        ; middle c
+        .equ        noteon = 0x90       ; ctl message channel 0
+        .equ        noteoff = 0x80      ; ctl message channel 0
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         .cseg
         .org    0x0000
+
 reset: 
         ldi     r16, Low(RAMEND)        ; init stack pointer
         ldi     r17, High(RAMEND)
@@ -55,7 +65,6 @@ tx:
 
         sts     USART1_TXDATAL, r16         ; send whatever is in r16
         ret
-
 
 
 ;; outer count goes in loopCt(r18)

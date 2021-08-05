@@ -1,3 +1,12 @@
+;******************************************************************************************
+;*   
+;*      Serial echo server
+;*              stores to string buffer, transmits back when \r recieved               
+;* 
+;*      Author: Alexander Porter (2021)
+;* 
+;******************************************************************************************
+
 ;; device definitions
         .include    "m4809def.inc"
         .include    "usbserial.inc"
@@ -24,16 +33,19 @@ reset_z:
         ldi     ZL, LOW(INTERNAL_SRAM_START)    ; setup z pointer
         ldi     ZH, HIGH(INTERNAL_SRAM_START)
         ret
+
 check_cr:
         lds     r16, USART3_RXDATAL         ; load next char from serial
         cpi     r16, $0D                    ; check if cr
         ret
+
 write_mem:
         st      Z+, r16
         ret
 
+
 null_terminate_mem:
-        ldi     r16, $00                ; write null terminator
+        ldi     r16, $00                    ; write null terminator
         st      Z+, r16
         ret
 
@@ -50,6 +62,8 @@ transmit_cr:
         call    usb_tx_wait
         sts     USART3_TXDATAL, r16   
         ret          
+
+;; send/recieve routines--see macro in usbserial.def
 rx:     using_usb_rx       check_cr, write_mem, null_terminate_mem
 
 tx:     using_usb_tx       read_mem, $0, transmit_cr
