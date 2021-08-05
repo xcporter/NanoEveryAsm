@@ -9,7 +9,7 @@
 
 ;; device definitions
         .include    "m4809def.inc"
-        .include    "usbserial.inc"
+        .include    "../libraries/usbserial.inc"
 
 ;; Setup
         .cseg
